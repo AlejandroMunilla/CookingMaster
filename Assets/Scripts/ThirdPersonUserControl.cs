@@ -62,10 +62,13 @@ public class ThirdPersonUserControl : MonoBehaviour
             //qwe dont get anything from the trash
             if (facingRaw != "Trash")
             {
+                Debug.Log("No trash");
                 if (facingRaw != "No" && facingRaw != "Table1" && facingRaw != "Table2" && facingRaw != "Client")
                 {
+                    Debug.Log("facing raw");
                     if (gameObject.name == "Player1")
                     {
+                        Debug.Log("Player1");
                         if (myGui.slot1P1 == "X")
                         {
                             myGui.slot1P1 = facingRaw;

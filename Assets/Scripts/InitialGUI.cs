@@ -11,8 +11,10 @@ public class InitialGUI : MonoBehaviour
     private Rect quitRect;
     private Rect logoRect;
     private Rect veggiesRect;
+    private Rect helpRect;
     private int buttonWidth;
     private int buttonHeight;
+    private string help = "Player1 keys; WASD for movement, Space to get veggies, E to release them. Player2 Keys: Arrows for movement, blocknumber 2 to get veggines, 3 to release them ";
     private Texture2D background;
     private Texture2D logo;
     private Texture2D veggies;
@@ -21,7 +23,7 @@ public class InitialGUI : MonoBehaviour
     void Start()
     {
         myStyle = new GUIStyle();
-        myStyle.fontSize = (int)(Screen.height * 0.04f);
+        myStyle.fontSize = (int)(Screen.height * 0.02f);
         myStyle.normal.textColor = Color.black;
         buttonHeight = (int)(Screen.height * 0.08f);
         buttonWidth = (int)(Screen.width * 0.20f);
@@ -31,6 +33,7 @@ public class InitialGUI : MonoBehaviour
         quitRect = new Rect (Screen.width * 0.1f, Screen.height * 0.2f + buttonHeight, buttonWidth, buttonHeight);
         logoRect = new Rect(Screen.width * 0.1f, Screen.height * 0.8f, Screen.width * 0.12f, Screen.width * 0.12f * 0.8f);
         veggiesRect = new Rect(Screen.width * 0.4f, Screen.height * 0.1f, Screen.width * 0.55f, Screen.width * 0.55f);
+        helpRect = new Rect(Screen.width * 0.02f, Screen.height * 0.05f, Screen.width * 0.2f, buttonHeight *4);
         background = (Texture2D) Resources.Load("Background");
         logo = (Texture2D)Resources.Load("Logo");
         veggies = (Texture2D)Resources.Load("Veggies");
@@ -50,5 +53,6 @@ public class InitialGUI : MonoBehaviour
         {
             Application.Quit();
         }
+        GUI.Label(helpRect, help, myStyle);
     }
 }
