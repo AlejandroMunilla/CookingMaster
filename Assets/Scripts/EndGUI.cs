@@ -211,7 +211,6 @@ public class EndGUI : MonoBehaviour
         
         if (myDict.ContainsKey(nameInput))
         {
-   //         Debug.Log(nameInput);
             if (myDict[nameInput] <= score)
             {
                 myDict[nameInput] = score;
@@ -233,10 +232,20 @@ public class EndGUI : MonoBehaviour
         myGui.score2 = 0;
         myGui.enabled = true;
         GetComponent<GameController>().enabled = true;
-        this.enabled = false;
-    }
+        Transform orders = transform.Find("Canvas/Orders");
+        orders.gameObject.SetActive(true);
+        foreach (Transform ta in orders)
+        {
+            if (ta.gameObject.activeSelf == false)
+            {
+                ta.gameObject.SetActive(true);
+            }
 
-    
+              this.enabled = false;
+
+        }
+
+    }
 }
 
 

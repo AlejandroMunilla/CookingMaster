@@ -3,9 +3,9 @@
 ///with both GUI ways of Unity. It also keeps track of the countdown timers for both players, so once both reach zero, game stops showing the 
 ///winner. 
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MyGUI : MonoBehaviour
 {
@@ -42,7 +42,9 @@ public class MyGUI : MonoBehaviour
     private Rect slot1Player2Rect;
     private Rect slot2Player2Rect;
 
+    private Transform ordersTa;
     public List<GameObject> players = new List<GameObject>();
+    public List<GameObject> clientTimes = new List<GameObject>();  
     
     private GUIStyle myStyle;
     private GUIStyle slotStyle;
@@ -101,6 +103,14 @@ public class MyGUI : MonoBehaviour
             {
                 players.Add(arrayPlayers[i]);
                 //        Debug.Log (arrayPlayers[i]);
+            }
+
+
+            ordersTa = transform.Find("Canvas/Orders");
+            for (int i = 0; i < ordersTa.childCount; i++)
+            {
+                clientTimes.Add (ordersTa.GetChild(i).Find("Time").gameObject);
+                Debug.Log(ordersTa.GetChild(i).Find("Time").gameObject);
             }
         }
 
@@ -174,17 +184,21 @@ public class MyGUI : MonoBehaviour
             GUI.Label(slot1Player2Rect, mix2, myStyle);
         }
 
-        //Countdown for clients before they leave if they are not served on time. 
-        for (int cnt = 0; cnt < gameController.timeClients.Count; cnt++)
-        {
-            GUI.Label (new Rect((Screen.width * 0.34f) + (cnt * (Screen.width * 0.083f)), Screen.height * 0.15f, labelWidth, labelHeight), gameController.timeClients[cnt].ToString("f0"), myStyle);
-        }
+
 
         //    GUI.Label ()
     }
 
     private void Update()
     {
+        //Countdown for clients before they leave if they are not served on time. 
+        for (int cnt = 0; cnt < gameController.timeClients.Count; cnt++)
+        {
+
+            clientTimes[cnt].GetComponent<Text>().text = gameController.timeClients[cnt].ToString("f0");
+            //GUI.Label (new Rect((Screen.width * 0.34f) + (cnt * (Screen.width * 0.083f)), Screen.height * 0.15f, labelWidth, labelHeight), gameController.timeClients[cnt].ToString("f0"), myStyle);
+        }
+
         timer1 -= Time.deltaTime;
         timer2 -= Time.deltaTime;
 
@@ -199,7 +213,7 @@ public class MyGUI : MonoBehaviour
                 {
                     gameController.timeClients[cnt] = 0;
                     gameController.clients.GetChild(cnt).gameObject.SetActive(false);
-                    gameController.transform.Find("Orders").GetChild(cnt).gameObject.SetActive(false);
+                    gameController.transform.Find("Canvas/Orders").GetChild(cnt).gameObject.SetActive(false);
                 }
             }
         }
@@ -225,6 +239,7 @@ public class MyGUI : MonoBehaviour
             }
         
             this.enabled = false;
+            transform.Find("Canvas/Order").gameObject.SetActive(false);
             GetComponent<EndGUI>().enabled = true;
         }
     }
