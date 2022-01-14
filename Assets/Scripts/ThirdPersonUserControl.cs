@@ -1,3 +1,12 @@
+/// <summary>
+/// Alejandro Munilla, January 12th, 2022
+/// Originally from Unity Assets, Third Person, I made some modifications, and I added all buttons to handle interactions and scripts for those interactions. 
+/// This scripts also relies strongly on Colliders interactions, which is handled by TriggerEnter and TriggerExits. 
+/// I quickly developed for one player then I expanded to a second player, however I believe this could be improved and become nicer script by unifying 
+/// more actions and interactions from Player1 / Player2, instead of defining if then for Player1 and then for Player2. 
+/// </summary>
+
+
 using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
@@ -42,65 +51,69 @@ public class ThirdPersonUserControl : MonoBehaviour
         pic1 = gc.transform.Find("Canvas/Table1/Text/Pick").GetComponent<Text>();
         text2 = gc.transform.Find("Canvas/Table2/Text").GetComponent<Text>();
         pic2 = gc.transform.Find("Canvas/Table2/Text/Pick").GetComponent<Text>();
-    
+
 
     }
 
     private void Update()
     {
+
         if (CrossPlatformInputManager.GetButtonUp(getButton))
-        {
-            if (facingRaw != "No" && facingRaw != "Table1" && facingRaw != "Client")
+        { 
+            //qwe dont get anything from the trash
+            if (facingRaw != "Trash")
             {
-                if (gameObject.name == "Player1")
+                if (facingRaw != "No" && facingRaw != "Table1" && facingRaw != "Table2" && facingRaw != "Client")
                 {
-                    if (myGui.slot1P1 == "X")
+                    if (gameObject.name == "Player1")
                     {
-                        myGui.slot1P1 = facingRaw;
+                        if (myGui.slot1P1 == "X")
+                        {
+                            myGui.slot1P1 = facingRaw;
+                        }
+                        else
+                        {
+                            if (myGui.slot2P1 == "X")
+                            {
+                                myGui.slot2P1 = facingRaw;
+                            }
+                        }
                     }
                     else
                     {
-                        if (myGui.slot2P1 == "X")
+                        if (myGui.slot1P2 == "X")
                         {
-                            myGui.slot2P1 = facingRaw;
+                            myGui.slot1P2 = facingRaw;
+                        }
+                        else
+                        {
+                            if (myGui.slot2P2 == "X")
+                            {
+                                myGui.slot2P2 = facingRaw;
+                            }
                         }
                     }
                 }
-                else
-                {
-                    if (myGui.slot1P2 == "X")
-                    {
-                        myGui.slot1P2 = facingRaw;
-                    }
-                    else
-                    {
-                        if (myGui.slot2P2 == "X")
-                        {
-                            myGui.slot2P2 = facingRaw;
-                        }
-                    }
-                }
-            }
-            else if (facingRaw == "Table1" && text1.text != "X")
-            {
-                if (gameObject.name == "Player1")
+                else if (facingRaw == "Table1" && text1.text != "X" && gameObject.name == "Player1")
                 {
                     myGui.mix1 = text1.text;
                     text1.text = "X";
+
                 }
-                else
+                else if (facingRaw == "Table2" && text2.text != "X" && gameObject.name == "Player2")
                 {
                     myGui.mix2 = text2.text;
                     text2.text = "X";
                 }
-   
             }
+
+         
         }
 
-        if (CrossPlatformInputManager.GetButtonUp(getButton))
+        if (CrossPlatformInputManager.GetButtonUp(setButtton))
         {
 
-            if (facingRaw == "Table1")
+            if (facingRaw == "Table1" && gameObject.name == "Player1")
             {
                 if (myGui.slot1P1 != "X")
                 {
@@ -135,10 +148,116 @@ public class ThirdPersonUserControl : MonoBehaviour
 
                 }
             }
+            else if (facingRaw == "Table2" && gameObject.name == "Player2")
+            {
+                if (myGui.slot1P2 != "X")
+                {
+                    if (text2.text == "X")
+                    {
+                        text2.text = myGui.slot1P2;
+                    }
+                    else
+                    {
+                        text2.text = text2.text + myGui.slot1P2;
+                    }
+                    pic2.text = "Picking " + myGui.slot1P2;
+                    myGui.slot1P2 = "X";
+                    DisableThis();
+
+
+                }
+                else if (myGui.slot2P2 != "X")
+                {
+
+                    if (text2.text == "X")
+                    {
+                        text2.text = myGui.slot2P2;
+                    }
+                    else
+                    {
+                        text2.text = text2.text + myGui.slot2P2;
+                    }
+                    pic2.text = "Picking " + myGui.slot2P2;
+                    myGui.slot2P2 = "X";
+                    DisableThis();
+
+                }
+            }
             else if (facingRaw == "Client")
             {
+                if (gameObject.name == "Player1")
+                {
+                    gameController.CheckDelivery(gameObject, myGui.mix1, clientNo);
+                }
+                else
+                {
+                    gameController.CheckDelivery(gameObject, myGui.mix2, clientNo);
+                }
+                
+            }
+            else if (facingRaw == "Trash")
+            {
+                if (gameObject.name == "Player1")
+                {
+                    if (myGui.mix1 != "No")
+                    {
+                        int penaltyPoints = myGui.mix1.Length * 5;
+                        myGui.score1 -= penaltyPoints;
+                        myGui.mix1 = "No";
 
-                gameController.CheckDelivery(gameObject, myGui.mix1, clientNo);
+                    }
+                    else
+                    {
+                        if (myGui.slot1P1 != "X")
+                        {
+    
+                            myGui.slot1P1 = "X";
+                            myGui.score1 -= 5;
+
+
+                        }
+                        else if (myGui.slot2P1 != "X")
+                        {
+
+
+                            myGui.slot2P1 = "X";
+                            myGui.score1 -= 5;
+
+                        }
+                    }
+
+                }
+                if (gameObject.name == "Player2")
+                {
+                    if (myGui.mix2 != "No")
+                    {
+                        int penaltyPoints = myGui.mix2.Length * 5;
+                        myGui.score2 -= penaltyPoints;
+                        myGui.mix2 = "No";
+
+                    }
+                    else
+                    {
+                        if (myGui.slot1P2 != "X")
+                        {
+
+                            myGui.slot1P2 = "X";
+                            myGui.score2 -= 5;
+
+
+                        }
+                        else if (myGui.slot2P2 != "X")
+                        {
+
+
+                            myGui.slot2P2 = "X";
+                            myGui.score2 -= 5;
+
+                        }
+                    }
+
+                }
+
             }
         }       
     }
@@ -167,7 +286,7 @@ public class ThirdPersonUserControl : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        Debug.Log(col.name + col.tag);
+    //    Debug.Log(col.name + col.tag);
         if (col.tag == "Raw")
         {
             facingRaw = col.name;
@@ -178,17 +297,17 @@ public class ThirdPersonUserControl : MonoBehaviour
             facingRaw = "No";
         }
 
-        if (col.name == "Table1")
+        if (col.name == "Table1" || col.name == "Table2")
         {
-            facingRaw = "Table1";
+            facingRaw = col.name;
         }
+
+
 
         if (col.tag == "Client")
         {
             facingRaw = "Client";
             clientNo = int.Parse(col.name);
-            Debug.Log(clientNo);
-            Debug.Log(col.name);
         }
 
         if (col.name == "PickUp")
@@ -222,8 +341,8 @@ public class ThirdPersonUserControl : MonoBehaviour
                 }
                 else if (pickUps.boost == "Speed")
                 {
-                    m_Character.m_AnimSpeedMultiplier = 1.5f;
-                    m_Character.m_MoveSpeedMultiplier = 1.5f;
+                    m_Character.m_AnimSpeedMultiplier = 1.3f;
+                    m_Character.m_MoveSpeedMultiplier = 1.3f;
                     Invoke("SlowToNormal", 20);
                     col.gameObject.SetActive(false);
                 }
@@ -231,6 +350,13 @@ public class ThirdPersonUserControl : MonoBehaviour
 
             }
         }
+
+        if (col.name == "Trash")
+        {
+            facingRaw = "Trash";
+        }
+
+        
     }
 
     private void OnTriggerExit(Collider other)
@@ -244,7 +370,15 @@ public class ThirdPersonUserControl : MonoBehaviour
     private void InvokeEnable()
     {
         this.enabled = true;
-        pic1.text = "";
+        if (gameObject.name == "Player1")
+        {
+            pic1.text = "";
+        }
+        else
+        {
+            pic2.text = "";
+        }
+       
         Debug.Log("Enable");
 
     }
@@ -258,8 +392,8 @@ public class ThirdPersonUserControl : MonoBehaviour
 
     private void SlowToNormal ()
     {
-        m_Character.m_AnimSpeedMultiplier = 1.0f;
-        m_Character.m_MoveSpeedMultiplier = 1.0f;
+        m_Character.m_AnimSpeedMultiplier = 1;
+        m_Character.m_MoveSpeedMultiplier = 1;
     }
 }
 

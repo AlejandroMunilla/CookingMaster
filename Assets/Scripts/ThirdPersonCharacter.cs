@@ -1,3 +1,7 @@
+///Alejandro Munilla, January 12th, 2022
+///This class is imported from Unity Asset Third Person Character, with small modifications. 
+///It handles movement through the Animator root motion. 
+
 using UnityEngine;
 
 
