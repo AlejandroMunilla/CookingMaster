@@ -41,6 +41,7 @@ public class MyGUI : MonoBehaviour
     private Rect slot2Player1Rect;
     private Rect slot1Player2Rect;
     private Rect slot2Player2Rect;
+    private Rect exitRect;
 
     private Transform ordersTa;
     public List<GameObject> players = new List<GameObject>();
@@ -96,6 +97,7 @@ public class MyGUI : MonoBehaviour
             slot2Player1Rect = new Rect(columnAdd1, Screen.height * 0.60f + buttonWidth, buttonWidth, buttonWidth);
             slot1Player2Rect = new Rect(columnAdd2, Screen.height * 0.60f, buttonWidth, buttonWidth);
             slot2Player2Rect = new Rect(columnAdd2, Screen.height * 0.60f + buttonWidth, buttonWidth, buttonWidth);
+            exitRect = new Rect(Screen.width * 0.45f, labelHeight, Screen.width * 0.1f, labelHeight);
 
             gameController = GetComponent<GameController>();
             GameObject[] arrayPlayers = GameObject.FindGameObjectsWithTag("Player");
@@ -130,7 +132,10 @@ public class MyGUI : MonoBehaviour
 
     private void OnGUI()
     {
-
+        if (GUI.Button(exitRect, "QUIT"))
+        {
+            Application.Quit();
+        }
         GUI.Label(timer1Rect, "Time: " + timer1.ToString("f0"), myStyle);
         GUI.Label(timer2Rect, "Time: " + timer2.ToString("f0"), myStyle);
         GUI.Label(score1Rect, "Score: " + score1.ToString(), myStyle);
